@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b20">
+<title>Orbit — Student Productivity Hub</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap');
+
+:root {
+  --bg: #090b20;
+  --panel: rgba(25, 29, 66, .82);
+  --line: rgba(180, 177, 255, .18);
+  --text: #f5f3ff;
+  --muted: #a5adcf;
+  --purple: #a78bfa;
+  --cyan: #67e8f9;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 75% 5%, #34306a 0, transparent 35%),
+    radial-gradient(ellipse at 5% 45%, #142650 0, transparent 35%),
+    var(--bg);
+  overflow-x: hidden;
+}
+
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+
+.stars {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: .65;
+  background-image:
+    radial-gradient(2px 2px at 30px 50px, white, transparent),
+    radial-gradient(1px 1px at 110px 120px, #c4b5fd, transparent),
+    radial-gradient(2px 2px at 190px 40px, #67e8f9, transparent);
+  background-size: 220px 180px;
+  animation: starMove 35s linear infinite;
+}
+
+.planet {
+  position: fixed;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float 7s ease-in-out infinite;
+}
+
+.planet.one {
+  width: 155px;
+  height: 155px;
+  right: -65px;
+  top: 170px;
+  background: radial-gradient(circle at 30% 25%, #f0abfc, #7957c9 45%, #15142f 78%);
+  box-shadow: inset -25px -18px 30px #08091d, 0 0 55px #8b5cf633;
+}
+
+.planet.two {
+  width: 75px;
+  height: 75px;
+  left: -35px;
+  bottom: 100px;
+  background: radial-gradient(circle at 30% 25%, #67e8f9, #3158a8 60%, #11132d);
+  box-shadow: inset -12px -12px 20px #08091d;
+  animation-delay: -3s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-16px) rotate(8deg); }
+}
+
+@keyframes starMove {
+  to { background-position: 220px 180px; }
+}
+
+header {
+  max-width: 1100px;
+  margin: auto;
+  padding: 18px 20px;
+  border-bottom: 1px solid #ffffff12;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font: 700 23px 'Space Grotesk', sans-serif;
+}
+
+.brand span { color: var(--purple); }
+
+.status {
+  color: #86efac;
+  font-size: 12px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 35px 20px;
+}
+
+.eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #b9a7ff;
+}
+
+h1 {
+  font: 700 clamp(38px, 7vw, 64px)/1.08 'Space Grotesk', sans-serif;
+  letter-spacing: -2px;
+  margin: 15px 0;
+}
+
+.gradient {
+  background: linear-gradient(100deg, #c4b5fd, #f0abfc, #67e8f9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+button {
+  border: none;
+  border-radius: 10px;
+  padding: 11px 15px;
+  font-weight: 700;
+  transition: .2s;
+}
+
+button:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+.primary {
+  color: white;
+  background: linear-gradient(110deg, #8b5cf6, #6366f1);
+  box-shadow: 0 6px 22px #6366f133;
+}
+
+.secondary {
+  background: #29264e;
+  border: 1px solid #a78bfa35;
+  color: #e9e3ff;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 13px;
+  margin: 25px 0;
+}
+
+.card, .panel, .quote {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 15px 45px #03041122;
+}
+
+.stat { padding: 17px; }
+.stat-label { font-size: 12px; color: var(--muted); }
+.stat strong {
+  display: block;
+  font: 700 29px 'Space Grotesk', sans-serif;
+  margin: 10px 0 3px;
+}
+.stat small { color: #8189ae; }
+
+.progress {
+  height: 5px;
+  background: #ffffff15;
+  border-radius: 10px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+.progress div {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #a78bfa, #67e8f9);
+  transition: width .3s;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.35fr .8fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.panel { padding: 20px; margin-bottom: 18px; min-width: 0; }
+
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+h2 {
+  font: 600 21px 'Space Grotesk', sans-serif;
+  margin: 7px 0 0;
+}
+
+form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 11px;
+  color: #b5bcda;
+  min-width: 0;
+}
+
+.field input, .field select, .field textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid #aab0e025;
+  border-radius: 9px;
+  background: #0c102b;
+  color: white;
+  outline: none;
+  font-size: 12px;
+}
+
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--purple);
+}
+
+.field textarea { resize: vertical; }
+.full { grid-column: 1 / -1; }
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 20px 0 12px;
+}
+
+.filters {
+  display: flex;
+  gap: 4px;
+  background: #090b2044;
+  padding: 4px;
+  border-radius: 9px;
+}
+
+.filter {
+  background: transparent;
+  color: #a5adcf;
+  padding: 8px 10px;
+  font-size: 11px;
+}
+
+.filter.active { background: #39315f; color: white; }
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.task {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid #ffffff12;
+  border-radius: 12px;
+  padding: 12px;
+  background: #ffffff05;
+  animation: appear .25s ease;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.task.done .task-title {
+  text-decoration: line-through;
+  color: #8189ae;
+}
+
+.check {
+  flex-shrink: 0;
+  width: 21px;
+  height: 21px;
+  padding: 0;
+  color: white;
+  background: #171a3c;
+  border: 1px solid #a78bfa66;
+}
+
+.check.checked { background: #8b5cf6; }
+
+.task-info { flex: 1; min-width: 0; }
+.task-title { font-size: 12px; font-weight: 700; overflow-wrap: anywhere; }
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 7px;
+  color: #a5adcf;
+  font-size: 10px;
+}
+
+.tag {
+  padding: 4px 7px;
+  border-radius: 6px;
+  color: #c4b5fd;
+  background: #a78bfa16;
+}
+
+.high { color: #fda4af; background: #fb71851b; }
+.low { color: #86efac; background: #34d39917; }
+
+.delete {
+  padding: 5px 8px;
+  color: #fda4af;
+  background: #fb718511;
+}
+
+.empty {
+  padding: 23px 10px;
+  border: 1px dashed #ffffff20;
+  border-radius: 12px;
+  color: #969fc4;
+  text-align: center;
+  font-size: 12px;
+}
+
+.note {
+  padding: 12px;
+  border: 1px solid #ffffff12;
+  border-radius: 12px;
+  background: #ffffff05;
+}
+
+.note-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: start;
+}
+
+.note h3 { margin: 0 0 5px; font-size: 12px; overflow-wrap: anywhere; }
+.note-subject { color: #c4b5fd; font-size: 10px; }
+.note-content {
+  color: #b5bcda;
+  font-size: 11px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-bottom: 0;
+}
+
+.quote { padding: 20px; }
+.quote-mark { font: 38px Georgia; color: #b9a7ff; }
+.quote p { font: 500 16px/1.6 'Space Grotesk', sans-serif; }
+.quote small { color: #b9a7ff; letter-spacing: 1px; font-size: 9px; }
+
+footer {
+  text-align: center;
+  color: #8189ae;
+  padding: 25px 0 10px;
+  font-size: 11px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translate(-50%, 15px);
+  opacity: 0;
+  pointer-events: none;
+  max-width: calc(100% - 30px);
+  padding: 12px 16px;
+  background: #29264e;
+  border: 1px solid #a78bfa55;
+  border-radius: 11px;
+  font-size: 12px;
+  transition: .25s;
+  z-index: 10;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 760px) {
+  .container { padding: 27px 14px; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .layout { grid-template-columns: 1fr; }
+  .panel { padding: 15px; }
+  .planet.one { width: 115px; height: 115px; }
+}
+
+@media (max-width: 380px) {
+  form { grid-template-columns: 1fr; }
+  .full { grid-column: 1; }
+}
+</style>
+</head>
+
+<body>
+<div class="stars"></div>
+<div class="planet one"></div>
+<div class="planet two"></div>
+
+<header>
+  <div class="brand">✦ orbit<span>.hub</span></div>
+  <div class="status">● Your study universe</div>
+</header>
+
+<main class="container">
+  <section>
+    <div class="eyebrow">✧ YOUR PERSONAL STUDY UNIVERSE</div>
+    <h1>Make space for<br><span class="gradient">great things.</span></h1>
+    <p class="subtitle">One small step today. One giant leap toward your goals.</p>
+    <button class="primary" id="jump">＋ Add a task</button>
+    <p class="subtitle" id="today"></p>
+  </section>
+
+  <section class="stats">
+    <div class="card stat">
+      <div class="stat-label">Total missions</div>
+      <strong id="total">0</strong>
+      <small>All your tasks</small>
+    </div>
+    <div class="card stat">
+      <div class="stat-label">Completed</div>
+      <strong id="completed">0</strong>
+      <small>Mission accomplished</small>
+    </div>
+    <div class="card stat">
+      <div class="stat-label">In progress</div>
+      <strong id="active">0</strong>
+      <small>Keep going</small>
+    </div>
+    <div class="card stat">
+      <div class="stat-label">Progress</div>
+      <strong id="percent">0%</strong>
+      <div class="progress"><div id="bar"></div></div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <section class="panel" id="taskPanel">
+      <div class="panel-heading">
+        <div>
+          <div class="eyebrow">MISSION CONTROL</div>
+          <h2>Your task orbit</h2>
+        </div>
+        <span class="tag" id="taskCount">0 tasks</span>
+      </div>
+
+      <form id="taskForm">
+        <label class="field full">Task name
+          <input id="taskTitle" required maxlength="120" placeholder="Finish database assignment">
+        </label>
+        <label class="field">Subject
+          <input id="subject" maxlength="80" placeholder="Computer Science">
+        </label>
+        <label class="field">Task type
+          <select id="type">
+            <option>Assignment</option>
+            <option>Exam</option>
+            <option>Study</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label class="field">Due date
+          <input type="date" id="due">
+        </label>
+        <label class="field">Priority
+          <select id="priority">
+            <option>Low</option>
+            <option selected>Medium</option>
+            <option>High</option>
+          </select>
+        </label>
+        <button class="primary full" type="submit">＋ Launch mission</button>
+      </form>
+
+      <div class="toolbar">
+        <div class="filters">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="active">Active</button>
+          <button class="filter" data-filter="done">Done</button>
+        </div>
+        <span id="taskMessage" class="subtitle"></span>
+      </div>
+      <div class="list" id="tasks"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <div class="eyebrow">KNOWLEDGE CAPSULES</div>
+            <h2>Study notes</h2>
+          </div>
+          <span>▤</span>
+        </div>
+
+        <form id="noteForm">
+          <label class="field full">Note title
+            <input id="noteTitle" required maxlength="120" placeholder="SQL joins">
+          </label>
+          <label class="field full">Subject
+            <input id="noteSubject" maxlength="80" placeholder="DBMS">
+          </label>
+          <label class="field full">Your notes
+            <textarea id="noteContent" rows="4" maxlength="10000" placeholder="Write important points..."></textarea>
+          </label>
+          <button class="secondary full" type="submit">Save knowledge ✧</button>
+        </form>
+        <div class="list" id="notes" style="margin-top:15px"></div>
+      </section>
+
+      <section class="quote">
+        <div class="quote-mark">“</div>
+        <p>Small progress is still progress. Keep showing up for yourself.</p>
+        <small>A NOTE FROM THE UNIVERSE ✦</small>
+      </section>
+    </aside>
+  </div>
+
+  <footer>Made for curious minds ✦ Keep exploring, keep growing.</footer>
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let tasks = [];
+let notes = [];
+let filter = "all";
+let toastTimer;
+
+$("today").textContent = new Intl.DateTimeFormat(undefined, {
+  weekday: "long", month: "long", day: "numeric", year: "numeric"
+}).format(new Date());
+
+function saveData() {
+  try {
+    localStorage.setItem("orbitTasks", JSON.stringify(tasks));
+    localStorage.setItem("orbitNotes", JSON.stringify(notes));
+  } catch (error) {
+    toast("Could not save data on this device.");
+  }
+}
+
+function loadData() {
+  try {
+    tasks = JSON.parse(localStorage.getItem("orbitTasks") || "[]");
+    notes = JSON.parse(localStorage.getItem("orbitNotes") || "[]");
+    if (!Array.isArray(tasks)) tasks = [];
+    if (!Array.isArray(notes)) notes = [];
+  } catch (error) {
+    tasks = [];
+    notes = [];
+  }
+}
+
+function toast(message) {
+  $("toast").textContent = message;
+  $("toast").classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $("toast").classList.remove("show"), 2400);
+}
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function renderStats() {
+  const done = tasks.filter(t => t.done).length;
+  const percent = tasks.length ? Math.round(done / tasks.length * 100) : 0;
+
+  $("total").textContent = tasks.length;
+  $("completed").textContent = done;
+  $("active").textContent = tasks.length - done;
+  $("percent").textContent = percent + "%";
+  $("bar").style.width = percent + "%";
+  $("taskCount").textContent = tasks.length + (tasks.length === 1 ? " task" : " tasks");
+}
+
+function renderTasks() {
+  const list = $("tasks");
+  list.replaceChildren();
+
+  const shown = tasks.filter(t =>
+    filter === "all" ||
+    (filter === "active" && !t.done) ||
+    (filter === "done" && t.done)
+  );
+
+  if (!shown.length) {
+    list.append(el("div", "empty",
+      filter === "done" ? "No completed missions yet ✧" : "Your orbit is clear. Add your first task above!"));
+    return;
+  }
+
+  shown.forEach(task => {
+    const row = el("article", "task" + (task.done ? " done" : ""));
+    const check = el("button", "check" + (task.done ? " checked" : ""), task.done ? "✓" : "");
+    check.type = "button";
+    check.setAttribute("aria-label", task.done ? "Mark incomplete" : "Mark completed");
+    check.onclick = () => {
+      task.done = !task.done;
+      saveData();
+      render();
+      toast(task.done ? "Mission accomplished! ✨" : "Task marked active.");
+    };
+
+    const info = el("div", "task-info");
+    info.append(el("div", "task-title", task.title));
+
+    const meta = el("div", "meta");
+    meta.append(el("span", "tag", task.subject || "General"));
+    meta.append(el("span", "tag", task.type));
+
+    if (task.due) {
+      const date = new Date(task.due + "T00:00:00");
+      meta.append(el("span", "", "Due " + date.toLocaleDateString(undefined, {
+        month: "short", day: "numeric"
+      })));
+    }
+
+    meta.append(el("span",
+      "tag " + (task.priority === "High" ? "high" : task.priority === "Low" ? "low" : ""),
+      task.priority + " priority"
+    ));
+
+    info.append(meta);
+
+    const del = el("button", "delete", "✕");
+    del.type = "button";
+    del.setAttribute("aria-label", "Delete task");
+    del.onclick = () => {
+      if (!confirm("Delete this task?")) return;
+      tasks = tasks.filter(t => t.id !== task.id);
+      saveData();
+      render();
+      toast("Task deleted.");
+    };
+
+    row.append(check, info, del);
+    list.append(row);
+  });
+}
+
+function renderNotes() {
+  const list = $("notes");
+  list.replaceChildren();
+
+  if (!notes.length) {
+    list.append(el("div", "empty", "Your study notes will appear here ✧"));
+    return;
+  }
+
+  notes.forEach(note => {
+    const card = el("article", "note");
+    const head = el("div", "note-head");
+    const info = document.createElement("div");
+
+    info.append(el("h3", "", note.title));
+    info.append(el("span", "note-subject", note.subject || "General"));
+
+    const del = el("button", "delete", "✕");
+    del.type = "button";
+    del.setAttribute("aria-label", "Delete note");
+    del.onclick = () => {
+      if (!confirm("Delete this note?")) return;
+      notes = notes.filter(n => n.id !== note.id);
+      saveData();
+      renderNotes();
+      toast("Note deleted.");
+    };
+
+    head.append(info, del);
+    card.append(head);
+
+    if (note.content) card.append(el("p", "note-content", note.content));
+    list.append(card);
+  });
+}
+
+function render() {
+  renderStats();
+  renderTasks();
+  renderNotes();
+}
+
+$("taskForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  tasks.unshift({
+    id: Date.now().toString() + Math.random().toString(16).slice(2),
+    title: $("taskTitle").value.trim(),
+    subject: $("subject").value.trim() || "General",
+    type: $("type").value,
+    due: $("due").value,
+    priority: $("priority").value,
+    done: false
+  });
+
+  saveData();
+  event.target.reset();
+  $("priority").value = "Medium";
+  render();
+  toast("Mission launched successfully ✦");
+});
+
+$("noteForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  notes.unshift({
+    id: Date.now().toString() + Math.random().toString(16).slice(2),
+    title: $("noteTitle").value.trim(),
+    subject: $("noteSubject").value.trim() || "General",
+    content: $("noteContent").value.trim()
+  });
+
+  saveData();
+  event.target.reset();
+  renderNotes();
+  toast("Knowledge capsule saved ✧");
+});
+
+document.querySelectorAll("[data-filter]").forEach(button => {
+  button.addEventListener("click", () => {
+    filter = button.dataset.filter;
+    document.querySelectorAll("[data-filter]").forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+    renderTasks();
+  });
+});
+
+$("jump").addEventListener("click", () => {
+  $("taskPanel").scrollIntoView({ behavior: "smooth" });
+  setTimeout(() => $("taskTitle").focus(), 350);
+});
+
+loadData();
+render();
+</script>
+</body>
+</html>
